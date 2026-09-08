@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#0C0A09"
+    android:padding="12dp">
+
+    <!-- Header / HUD Row 1 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="#1C1917"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/tvBakeryName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Boulangerie Emma"
+            android:textColor="#F59E0B"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvCycleDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cycle 1 • Jour 1/7"
+            android:textColor="#A8A29E"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tvActionsCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="5/5"
+            android:textColor="#4ADE80"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Finances & Clientèle Row 2 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="6dp"
+        android:background="#1C1917"
+        android:padding="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="💶 Caisse: "
+            android:textColor="#A8A29E"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tvCash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1000€"
+            android:textColor="#4ADE80"
+            android:textStyle="bold"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="🏦 Banque: "
+            android:textColor="#A8A29E"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tvBank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0€"
+            android:textColor="#38BDF8"
+            android:textStyle="bold"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <!-- Client Meter -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="4dp"
+        android:background="#1C1917"
+        android:padding="6dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="👥 Clientèle du jour"
+                android:textColor="#A8A29E"
+                android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/tvClientsCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 / 50 (50 restants)"
+                android:textColor="#F59E0B"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/pbClients"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_marginTop="4dp"
+            android:progress="0"
+            android:max="50" />
+    </LinearLayout>
+
+    <!-- Stocks de Pain -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp"
+        android:background="#1C1917"
+        android:padding="6dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🥖 Frais: "
+            android:textColor="#A8A29E"
+            android:textSize="11sp" />
+        <TextView
+            android:id="@+id/tvBreadFresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="#4ADE80"
+            android:textStyle="bold"
+            android:textSize="11sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="1j: "
+            android:textColor="#A8A29E"
+            android:textSize="11sp" />
+        <TextView
+            android:id="@+id/tvBreadDay1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="#FBBF24"
+            android:textStyle="bold"
+            android:textSize="11sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="2j: "
+            android:textColor="#A8A29E"
+            android:textSize="11sp" />
+        <TextView
+            android:id="@+id/tvBreadDay2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="#FB923C"
+            android:textStyle="bold"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/tvBakeReadyBadge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="5 fournées prêtes"
+            android:textColor="#F59E0B"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <!-- Ingrédients -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp"
+        android:background="#1C1917"
+        android:padding="6dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Farine: "
+            android:textColor="#A8A29E"
+            android:textSize="10sp" />
+        <TextView
+            android:id="@+id/tvFlour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="50 kg"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="Levure: "
+            android:textColor="#A8A29E"
+            android:textSize="10sp" />
+        <TextView
+            android:id="@+id/tvYeast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10 kg"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="Sel: "
+            android:textColor="#A8A29E"
+            android:textSize="10sp" />
+        <TextView
+            android:id="@+id/tvSalt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5 kg"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="Eau: "
+            android:textColor="#A8A29E"
+            android:textSize="10sp" />
+        <TextView
+            android:id="@+id/tvWater"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="50 L"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <!-- Terminal Logs RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTerminal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="6dp"
+        android:background="#000000"
+        android:padding="8dp" />
+
+    <!-- Action Buttons Grid -->
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:rowCount="3"
+        android:layout_marginTop="6dp">
+
+        <Button
+            android:id="@+id/btnBake"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_margin="2dp"
+            android:text="[1] 🥖 Fabriquer"
+            android:backgroundTint="#292524"
+            android:textColor="#F59E0B"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnSell"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_margin="2dp"
+            android:text="[2] 💰 Vendre"
+            android:backgroundTint="#292524"
+            android:textColor="#4ADE80"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnBuy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_margin="2dp"
+            android:text="[3] 📦 Ingrédients"
+            android:backgroundTint="#292524"
+            android:textColor="#A8A29E"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnBank"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_margin="2dp"
+            android:text="[4] 🏦 Banque"
+            android:backgroundTint="#292524"
+            android:textColor="#38BDF8"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnEndDay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:layout_margin="2dp"
+            android:text="[5] 🌙 Fin de journée"
+            android:backgroundTint="#451A03"
+            android:textColor="#FDBA74"
+            android:textSize="12sp" />
+    </GridLayout>
+
+</LinearLayout>
