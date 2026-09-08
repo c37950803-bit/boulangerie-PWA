@@ -1,0 +1,6 @@
+{
+  "name": "Boulangerie Emma - Jeu de Gestion",
+  "description": "Simulation et jeu de gestion d'une boulangerie artisanale au format terminal mobile PWA.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

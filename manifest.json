@@ -1,0 +1,35 @@
+{
+  "short_name": "Boulangerie",
+  "name": "Boulangerie Emma - Jeu de Gestion",
+  "description": "Simulation et jeu de gestion d'une boulangerie artisanale au format terminal mobile.",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "/icons/icon-maskable.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ],
+  "start_url": "/",
+  "scope": "/",
+  "background_color": "#120f0c",
+  "theme_color": "#f59e0b",
+  "display": "standalone",
+  "orientation": "portrait",
+  "categories": ["games", "simulation", "entertainment"]
+}

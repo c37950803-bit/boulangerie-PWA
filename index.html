@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    
+    <!-- PWA & Métadonnées Générales -->
+    <title>Boulangerie Emma - Jeu de Gestion</title>
+    <meta name="description" content="Simulation et jeu de gestion d'une boulangerie artisanale au format terminal mobile PWA." />
+    <meta property="og:title" content="Boulangerie Emma - Jeu de Gestion" />
+    <meta property="og:description" content="Simulation et jeu de gestion d'une boulangerie artisanale au format terminal mobile PWA." />
+    <meta property="og:type" content="website" />
+    
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#0e0b08" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Boulangerie" />
+    
+    <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    
+    <link rel="stylesheet" href="/terminal.css" />
+    <style>
+      /* Empêcher l'overlay d'erreur Vite de recouvrir l'interface */
+      vite-error-overlay {
+        display: none !important;
+      }
+    </style>
+    <script>
+      // 1. Filtrer le message bénin de websocket Vite dans l'environnement iframe AI Studio
+      (function() {
+        const _origConsoleError = console.error;
+        console.error = function(...args) {
+          const msg = args.map(function(a) { return String((a && a.message) || a || ''); }).join(' ');
+          if (msg.includes('failed to connect to websocket') || msg.includes('WebSocket')) {
+            return;
+          }
+          _origConsoleError.apply(console, args);
+        };
+        window.addEventListener('unhandledrejection', function(event) {
+          if (event.reason && String(event.reason.message || event.reason).includes('WebSocket')) {
+            event.preventDefault();
+          }
+        });
+      })();
+
+      // 2. Nettoyage immédiat de tous les anciens caches de versions passées
+      if ('caches' in window) {
+        caches.keys().then(function(names) {
+          names.forEach(function(name) {
+            if (name !== 'boulangerie-pwa-v2.2') {
+              caches.delete(name);
+            }
+          });
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div class="app-container">
+      <div id="terminal-screen" class="terminal-screen">
+        
+        <!-- Bannière d'installation PWA si éligible -->
+        <div id="pwa-install-banner" class="pwa-install-banner" style="display: none;">
+          <span>📲 Installer la PWA sur votre écran d'accueil</span>
+          <button id="btn-install-pwa" class="top-btn" style="color: #120e0b; background: var(--border-amber); font-weight: 800;">
+            Installer
+          </button>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             1. ÉCRAN D'ACCUEIL CONSOLE / ANDROID-LIKE (TITLE SCREEN)
+             ═══════════════════════════════════════════════════════════ -->
+        <section id="home-screen" class="view-screen home-view">
+          <div class="home-top-bar">
+            <span class="system-badge">🎮 NATIVE RETRO EDITION • v2.0</span>
+            <div class="home-top-actions">
+              <button id="home-toggle-sound" class="top-btn" title="Activer / Désactiver le son">🔊 Audio: ON</button>
+              <button id="home-toggle-scanlines" class="top-btn" title="Bascule effet scanlines">📺 CRT: ON</button>
+            </div>
+          </div>
+
+          <div class="home-hero-banner">
+            <div class="home-logo-ascii" aria-hidden="true">
+              <pre>
+   ░██████╗░░█████╗░██╗░░░██╗██╗░░░░░
+   ░██╔══██╗██╔══██╗██║░░░██║██║░░░░░
+   ░██████╦╝██║░░██║██║░░░██║██║░░░░░
+   ░██╔══██╗██║░░██║██║░░░██║██║░░░░░
+   ░██████╦╝╚█████╔╝╚██████╔╝███████╗
+   ░╚═════╝░░╚════╝░░╚═════╝░╚══════╝</pre>
+            </div>
+            <h1 class="home-game-title">🥖 BOULANGERIE ARTISANALE</h1>
+            <div class="home-game-tagline">Simulation & Gestion de Fournil • Édition Console</div>
+            <div id="home-save-indicator" class="home-save-indicator">
+              <span>Chargement de la mémoire...</span>
+            </div>
+          </div>
+
+          <div class="home-menu-grid">
+            <button id="home-btn-play" class="home-menu-btn play-btn" aria-label="Lancer ou reprendre la partie">
+              <div class="menu-btn-icon">▶</div>
+              <div class="menu-btn-text">
+                <span class="menu-btn-title">JOUER</span>
+                <span id="home-play-subtext" class="menu-btn-subtitle">Reprendre la partie en cours</span>
+              </div>
+            </button>
+
+            <button id="home-btn-scores" class="home-menu-btn" aria-label="Consulter les meilleurs scores">
+              <div class="menu-btn-icon">🏆</div>
+              <div class="menu-btn-text">
+                <span class="menu-btn-title">CLASSEMENT & SCORES</span>
+                <span class="menu-btn-subtitle">Tableau d'honneur des boulangers</span>
+              </div>
+            </button>
+
+            <button id="home-btn-rules" class="home-menu-btn" aria-label="Lire les règles complètes">
+              <div class="menu-btn-icon">📖</div>
+              <div class="menu-btn-text">
+                <span class="menu-btn-title">RÈGLES DU JEU & À PROPOS</span>
+                <span class="menu-btn-subtitle">Guide de panification & économie</span>
+              </div>
+            </button>
+
+            <button id="home-btn-credits" class="home-menu-btn" aria-label="Voir les crédits du jeu">
+              <div class="menu-btn-icon">✨</div>
+              <div class="menu-btn-text">
+                <span class="menu-btn-title">CRÉDITS</span>
+                <span class="menu-btn-subtitle">Conception, audio & moteur PWA</span>
+              </div>
+            </button>
+
+            <button id="home-btn-reset-all" class="home-menu-btn reset-btn" aria-label="Recommencer tout à zéro">
+              <div class="menu-btn-icon">⚠️</div>
+              <div class="menu-btn-text">
+                <span class="menu-btn-title">RECOMMENCER À ZÉRO</span>
+                <span class="menu-btn-subtitle">Effacer la sauvegarde et réinitialiser</span>
+              </div>
+            </button>
+          </div>
+
+          <div class="home-footer-info">
+            <span>Interface tactile Android-ready • Touches clavier 1-5 supportées</span>
+          </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             2. ÉCRAN DE JEU TERMINAL & FOURNIL (GAME SCREEN)
+             ═══════════════════════════════════════════════════════════ -->
+        <section id="game-screen" class="view-screen game-view" style="display: none;">
+          <!-- Barre d'en-tête du jeu avec Menu/Pause et raccourcis -->
+          <header class="terminal-top-bar">
+            <button id="btn-in-game-menu" class="top-btn menu-btn" title="Ouvrir le menu de pause et sauvegarder">
+              ⏸️ Menu / Pause
+            </button>
+
+            <div class="terminal-title-center">
+              <span id="in-game-title-text">🥖 BOULANGERIE_OS</span>
+            </div>
+
+            <div class="terminal-top-actions">
+              <button id="btn-toggle-sound" class="top-btn" title="Activer / Couper le son terminal">🔊 Audio: ON</button>
+              <button id="btn-toggle-scanlines" class="top-btn" title="Bascule effet scanlines">📺 CRT: ON</button>
+            </div>
+          </header>
+
+          <!-- Tableau de bord dynamique avec INVENTAIRE AUTOMATIQUE PERMANENT -->
+          <section class="bakery-hud" aria-label="Tableau de bord et inventaire en temps réel">
+            
+            <!-- Ligne 1 : Période temporelle et Actions restantes en diodes LEDs -->
+            <div class="hud-primary-row">
+              <div class="hud-tile">
+                <span class="hud-tile-title">Cycle</span>
+                <span id="hud-cycle" class="hud-tile-val">Cycle 1</span>
+              </div>
+
+              <div class="hud-tile">
+                <span class="hud-tile-title">Calendrier</span>
+                <span id="hud-jour" class="hud-tile-val" style="color: var(--text-amber-glow);">Jour 1 / 7</span>
+              </div>
+
+              <div class="hud-tile">
+                <div class="hud-tile-title">
+                  <span>Actions</span>
+                  <span id="hud-actions-count" style="font-weight: 700; color: var(--text-amber);">5/5</span>
+                </div>
+                <div id="hud-action-pips" class="action-pips" title="5 actions par jour">
+                  <span class="pip filled"></span>
+                  <span class="pip filled"></span>
+                  <span class="pip filled"></span>
+                  <span class="pip filled"></span>
+                  <span class="pip filled"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ligne 2 : Finances & Jauge Clients -->
+            <div class="hud-secondary-row">
+              <div class="finance-tile">
+                <span class="finance-label">💶 Liquide</span>
+                <span id="hud-argent" class="finance-val cash">1000€</span>
+              </div>
+
+              <div class="finance-tile">
+                <span class="finance-label">🏦 Banque</span>
+                <span id="hud-banque" class="finance-val bank">0€</span>
+              </div>
+
+              <div class="client-meter-container">
+                <div class="client-meter-header">
+                  <span>👥 Clientèle du jour</span>
+                  <span id="hud-clients-text">0 / 50</span>
+                </div>
+                <div class="client-meter-bar">
+                  <div id="hud-clients-bar" class="client-meter-fill"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ligne 3 : INVENTAIRE AUTOMATIQUE TEMPS RÉEL (Remplace le bouton statut manuel) -->
+            <div class="hud-inventory-shelf" title="Inventaire et fournées mis à jour automatiquement à chaque action">
+              <div class="shelf-header">
+                <span class="shelf-title">📦 INVENTAIRE DU FOURNIL (TEMPS RÉEL)</span>
+                <span id="hud-bake-readiness" class="shelf-badge">🥖 3 fournées prêtes (+90 pains)</span>
+              </div>
+
+              <div class="shelf-items-grid">
+                <!-- Ingrédients -->
+                <div class="inventory-pill" title="Farine : 10kg par fournée">
+                  <span class="item-icon">🌾</span>
+                  <span class="item-name">Farine</span>
+                  <strong id="hud-farine" class="item-val">50kg</strong>
+                </div>
+                <div class="inventory-pill" title="Levure : 2kg par fournée">
+                  <span class="item-icon">🧪</span>
+                  <span class="item-name">Levure</span>
+                  <strong id="hud-levure" class="item-val">10kg</strong>
+                </div>
+                <div class="inventory-pill" title="Sel : 1kg par fournée">
+                  <span class="item-icon">🧂</span>
+                  <span class="item-name">Sel</span>
+                  <strong id="hud-sel" class="item-val">5kg</strong>
+                </div>
+                <div class="inventory-pill" title="Eau : 5L par fournée">
+                  <span class="item-icon">💧</span>
+                  <span class="item-name">Eau</span>
+                  <strong id="hud-eau" class="item-val">50L</strong>
+                </div>
+
+                <!-- Étagères à pain par fraîcheur -->
+                <div class="bread-pill fresh" title="Pain frais du jour (4€ à 6€)">
+                  <span class="bread-tag">0j Frais</span>
+                  <strong id="hud-bread-0" class="bread-qty">0</strong>
+                </div>
+                <div class="bread-pill day1" title="Pain de la veille (3€ à 4€)">
+                  <span class="bread-tag">1j Veille</span>
+                  <strong id="hud-bread-1" class="bread-qty">0</strong>
+                </div>
+                <div class="bread-pill day2" title="Pain d'avant-veille (2€)">
+                  <span class="bread-tag">2j Ancien</span>
+                  <strong id="hud-bread-2" class="bread-qty">0</strong>
+                </div>
+                <div class="bread-pill day3" id="hud-slot-3" style="display: none;" title="Pain dur périmé (jeté au soir)">
+                  <span class="bread-tag">3j Périmé</span>
+                  <strong id="hud-bread-3" class="bread-qty">0</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bannière dynamique de l'événement du jour -->
+            <div id="hud-event-bar" class="event-alert-bar" style="display: none;">
+              <span id="hud-event-text">☀️ Jour ordinaire - Rien de spécial aujourd'hui</span>
+            </div>
+
+          </section>
+
+          <!-- Corps du terminal défilant (Animation machine à écrire élégante) -->
+          <main id="terminal-body" class="terminal-body" role="log" aria-live="polite" title="Touchez n'importe où pour passer l'animation de frappe">
+            <!-- Messages ajoutés dynamiquement avec machine à écrire -->
+          </main>
+
+          <!-- Dock tactile épuré sans encombrement inutile (5 boutons ciblés) -->
+          <footer class="terminal-dock">
+            <!-- Zone interactive dynamique (Banque, Choix, Prompts inline) -->
+            <div id="dock-dynamic-container" style="display: none;"></div>
+
+            <!-- Grille épurée à 5 actions -->
+            <div id="dock-standard-actions" class="dock-actions-grid clean-5-grid">
+              
+              <button id="btn-act-fabriquer" class="action-card-btn primary">
+                <div class="btn-row-header">
+                  <span class="btn-hotkey">[1]</span>
+                  <span class="btn-title">🥖 Fabriquer</span>
+                </div>
+                <span class="btn-subtext" id="subtext-fabriquer">+30 pains (-10F -2L -1S -5E)</span>
+              </button>
+
+              <button id="btn-act-vendre" class="action-card-btn primary">
+                <div class="btn-row-header">
+                  <span class="btn-hotkey">[2]</span>
+                  <span class="btn-title">💰 Vendre</span>
+                </div>
+                <span class="btn-subtext" id="subtext-vendre">Écouler stock vendable</span>
+              </button>
+
+              <button id="btn-act-acheter" class="action-card-btn">
+                <div class="btn-row-header">
+                  <span class="btn-hotkey">[3]</span>
+                  <span class="btn-title">📦 Ingrédients</span>
+                </div>
+                <span class="btn-subtext" id="subtext-acheter">Acheter pack (20€)</span>
+              </button>
+
+              <button id="btn-act-banque" class="action-card-btn">
+                <div class="btn-row-header">
+                  <span class="btn-hotkey">[4]</span>
+                  <span class="btn-title">🏦 Banquer</span>
+                </div>
+                <span class="btn-subtext">Dépôt sécurisé (-10%)</span>
+              </button>
+
+              <button id="btn-act-fin-journee" class="action-card-btn night-action">
+                <div class="btn-row-header">
+                  <span class="btn-hotkey">[5]</span>
+                  <span class="btn-title">🌙 Fin de journée</span>
+                </div>
+                <span class="btn-subtext">Clôturer la journée</span>
+              </button>
+
+            </div>
+          </footer>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- Script modulaire Vanilla JS PWA -->
+    <script type="module" src="/js/main.js"></script>
+  </body>
+</html>
